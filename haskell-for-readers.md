@@ -478,7 +478,6 @@ If you look at the last two lines, we again see a common pattern. And abstractin
 Prelude> countCountDigits x = twice countDigits x
 Prelude> sumSumDigits x = twice sumDigits x
 ```
-[**Was here, wonder if it will survive.**]
 
 The ability to abstract very easily over functions is an important ingredient in making Haskell so excellent at abstraction: It allows to abstract over *behavior*, instead merely over *value*. To demonstrate that, let us recall the definitions of `countDigits` and `someDigits`:
 ```
@@ -486,7 +485,7 @@ Prelude> countDigits n = if n < 10 then 1 else countDigits (n `div` 10) + 1
 Prelude> sumDigits n = if n < 10 then n else sumDigits (n `div` 10) + (n `mod` 10)
 ```
 
-These two functions share something: They share a behavior! Both iterate over the digits of the function, do something at each digit, and sum something up. And this common functionality is not trivial! So it is very unsatisfying to copy’n’paste it, like we did. So how can we abstract over the parts that differ? It is not obvious on first glance, so go through it step by step, lets give the parts that differ names. For `countDigits`, we *ignore* the digit, and just sum up ones:
+These two functions share something: They share a behavior! Both iterate over the digits of the function, do something at each digit, and sum something up. And this common functionality is not trivial! So it is very unsatisfying to copy’n’paste it, like we did. So how can we abstract over the parts that differ? It is not obvious at first glance, so go through it step by step, let's give the parts that differ names. For `countDigits`, we *ignore* the digit, and just sum up ones:
 ```
 Prelude> always1 n = 1
 Prelude> countDigits n = if n < 10 then always1 n else countDigits (n `div` 10) + always1 (n `mod` 10)
@@ -502,7 +501,7 @@ Prelude> countDigits n = sumDigitsWith always1 n
 Prelude> sumDigits n = sumDigitsWith id n
 ```
 
-To recapitulate: We took two functions that were doing somehow related things, and we rewrote them to clearly separate the common parts from the differing parts, and then we could extract the shared essence into its own, higher-order function.
+To recapitulate: We took two functions that were doing somehow related things, and we rewrote them to clearly separate the common parts from the differing parts, and then we could extract the shared essence into its own higher-order function.
 
 This single mechanism -- abstracting over functions -- can [replace thick volumes full of design patterns](https://www.voxxed.com/2016/04/gang-four-patterns-functional-light-part-1/) in non-functional programming paradigms.
 
@@ -519,7 +518,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 :::
 
 ::: Exercise
-Use this function and `sumDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `sumDigits` to `x` results in 3 or 9.
+Use this function and `sumDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `sumDigits` to `x` results in 3, 6 or 9.
 :::
 
 ::: Solution
@@ -543,14 +542,14 @@ These are also called *lambda abstractions*, because they are derived from the L
 Higher-order function definition
 --------------------------------
 
-Lets look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
+Let's look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
 
 ```
 Prelude> countDigits = sumDigitsWith (\d -> 1)
 Prelude> sumDigits = sumDigitsWith (\d -> d)
 ```
 
-It looks as if we just saved two characters. But what really just happened is that we shifted our perspective, and raised the level of abstraction by one layer. Instead of defining a `countDigits` as a function that takes a number and produces another number, we have defined `countDigits` as the result of instantiating the pattern `sumDigitsWith` with the function `(\d -> 1)`. At this level of thought, we do not care about the argument to `countDigits`, i.e. what it is called or so.
+It looks as if we just saved two characters. But what really just happened is that we shifted our perspective, and raised the level of abstraction by one layer. Instead of defining a `countDigits` as a function that takes a number and produces another number, we have defined `countDigits` as the result of instantiating the pattern `sumDigitsWith` with the function `(\d -> 1)`. At this level of thought, we do not care about the argument to `countDigits`, like what it is called.
 
 ::: Exercise
 Which other recent definitions can be changed accordingly?
@@ -606,6 +605,11 @@ where again, the actual value is no longer the emphasis, but rather the function
 
 The value `x` is sometimes called the point (as in geometry), and this style of programming is called *point-free* (or sometimes *pointless*).
 
+[
+  **Purity**
+  Granted, there are some Haskell expressions **that** do not denote a value
+  Because functions a**re** simply abstracted expressions
+]
 
 Laziness ★
 ----------
