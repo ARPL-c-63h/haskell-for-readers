@@ -803,7 +803,7 @@ There are more polymorphic functions in our initial set, for example `fixEq`:
 *Main> :t fixEq
 fixEq :: Eq t => (t -> t) -> t -> t
 ```
-The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot). So `fixEq` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
+The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot.) So `fixEq` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
 ```
 *Main> fixEq twice not True
 
@@ -903,7 +903,7 @@ ifThenElse True x y = x
 ifThenElse False x y = y
 ```
 The only reason to have `if … then … else …`  is that it is a bit more readable.
-
+[***Here***]
 ### Constructor with parameters
 
 So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce complex numbers:
