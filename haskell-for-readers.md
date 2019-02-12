@@ -1,3 +1,9 @@
+<!--Joachim,
+    Sorry it took so long. Been ill.
+    Never did this before, both proofreading and working with/on GitHub. There is a learning curve : )
+    Will go over it from the start and include earlier edits/diffs.
+-->
+
 % Haskell for Readers
 % [Joachim Breitner](http://www.joachim-breitner.de/), [DFINITY Foundation](https://dfinity.org/)
 
@@ -279,7 +285,7 @@ Prelude> 123 `mod` 10 == 0
 False
 ```
 
-But this gets repetitive quickly. And whenever we program something in a repetitive way, we try to recognize the *pattern* and abstract over the changing *parameter*, leaving only the common parts
+But this gets repetitive quickly. And whenever we program something in a repetitive way, we try to recognize the *pattern* and abstract over the changing *parameter*, leaving only the common parts.
 
 Here, the common pattern is ``x `mod` 10 == 0``, with a parameter named `x`. We can give this pattern a name, and use it instead:
 ```
@@ -314,6 +320,7 @@ Write a function `absoluteValue` with one parameter. If the parameter is negativ
 ::: Solution
 ```haskell
 absoluteValue x = if x < 0 then - x else x
+**[Maybe add the remark that when you apply absoluteValue to a negative number you have to wrap it in parentheses and why that is? Perhaps also explain why "- x" in the then-clause *is* allowable?]**
 ```
 :::
 
@@ -353,6 +360,7 @@ which, if you read it out, is almost a transliteration of the specification! Her
 By the way, you can use infix operator syntax already when defining a function:
 ```
 x `divides` y = x `div` y == 0
+**[x `divides` y = y `mod` x == 0]**
 ```
 
 Recursion
@@ -482,7 +490,7 @@ Prelude> countDigits n = if n < 10 then 1 else countDigits (n `div` 10) + 1
 Prelude> sumDigits n = if n < 10 then n else sumDigits (n `div` 10) + (n `mod` 10)
 ```
 
-These two functions share something: They share a behavior! Both iterate over the digits of the function, do something at each digit, and sum something up. And this common functionality is not trivial! So it is very unsatisfying to copy’n’paste it, like we did. So how can we abstract over the parts that differ? It is not obvious on first glance, so go through it step by step, lets give the parts that differ names. For `countDigits`, we *ignore* the digit, and just sum up ones:
+These two functions share something: They share a behavior! Both iterate over the digits of the function, do something at each digit, and sum something up. And this common functionality is not trivial! So it is very unsatisfying to copy’n’paste it, like we did. So how can we abstract over the parts that differ? It is not obvious at first glance, so go through it step by step, let's give the parts that differ names. For `countDigits`, we *ignore* the digit, and just sum up ones:
 ```
 Prelude> always1 n = 1
 Prelude> countDigits n = if n < 10 then always1 n else countDigits (n `div` 10) + always1 (n `mod` 10)
@@ -498,7 +506,7 @@ Prelude> countDigits n = sumDigitsWith always1 n
 Prelude> sumDigits n = sumDigitsWith id n
 ```
 
-To recapitulate: We took two functions that were doing somehow related things, and we rewrote them to clearly separate the common parts from the differing parts, and then we could extract the shared essence into its own, higher-order function.
+To recapitulate: We took two functions that were doing somehow related things, and we rewrote them to clearly separate the common parts from the differing parts, and then we could extract the shared essence into its own higher-order function.
 
 This single mechanism -- abstracting over functions -- can [replace thick volumes full of design patterns](https://www.voxxed.com/2016/04/gang-four-patterns-functional-light-part-1/) in non-functional programming paradigms.
 
@@ -539,14 +547,14 @@ These are also called *lambda abstractions*, because they are derived from the L
 Higher-order function definition
 --------------------------------
 
-Lets look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
+Let's look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
 
 ```
 Prelude> countDigits = sumDigitsWith (\d -> 1)
 Prelude> sumDigits = sumDigitsWith (\d -> d)
 ```
 
-It looks as if we just saved two characters. But what really just happened is that we shifted our perspective, and raised the level of abstraction by one layer. Instead of defining a `countDigits` as a function that takes a number and produces another number, we have defined `countDigits` as the result of instantiating the pattern `sumDigitsWith` with the function `(\d -> 1)`. At this level of thought, we do not care about the argument to `countDigits`, i.e. what it is called or so.
+It looks as if we just saved two characters. But what really just happened is that we shifted our perspective, and raised the level of abstraction by one layer. Instead of defining a `countDigits` as a function that takes a number and produces another number, we have defined `countDigits` as the result of instantiating the pattern `sumDigitsWith` with the function `(\d -> 1)`. At this level of thought, we do not care about the argument to `countDigits`, like what it is called.
 
 ::: Exercise
 Which other recent definitions can be changed accordingly?
@@ -563,9 +571,9 @@ Prelude> sumSumDigits = twice sumDigits
 Currying
 --------
 
-We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as functions that *return* functions. And this brings us to the deep and beautiful explanation why we write multiple arguments to functions the way we do: Because really, every function only ever has one argument.
+We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as functions that *return* functions. And this brings us to the deep and beautiful explanation why we write multiple arguments to functions the way we do: Because really, every function only ever has one argument, and returns another one.
 
-We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, which then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
+We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function which takes one argument (the function `f`), and returns another function, which then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
 The composition operator ☆
 --------------------------
@@ -612,9 +620,9 @@ We have not seen variables that you declare to hold one value, and later you upd
 
 This is because, fundamentally, those things do not exist in Haskell. A Haskell expression simply denotes a value -- e.g. a number, a Boolean, maybe a function. And it always denotes the same value. Evaluating the same expression a second time will not give different results, nor will it delete your backups. We say that Haskell is a *pure* language, and it has no *side-effects*.
 
-Granted, there are some Haskell expressions do not denote a value: Some go into an infinite loop, or raise an exception (e.g. division by zero). But there are still no side-effects here.
+Granted, there are some Haskell expressions that do not denote a value: Some go into an infinite loop, or raise an exception (e.g. division by zero). But there are still no side-effects here.
 
-Because functions a simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
+Because functions are simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
 
 But if expressions and functions can’t *do* anything, how can we write useful programs? Programs that respond to network requests, or do an in-place array sort, or use concurrency? Can we do that, and still have a pure language? Yes, we can, and Haskell’s solution to this dilemma are monads. We will handle that topic in a quick-and-dirty way in [the chapter on imperative code](#io) and more properly [the chapter on monads](#monads).
 
@@ -813,7 +821,7 @@ There are more polymorphic functions in our initial set, for example `fixEq`:
 *Main> :t fixEq
 fixEq :: Eq t => (t -> t) -> t -> t
 ```
-The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot). So `fixEq` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
+The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot.) So `fixEq` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
 ```
 *Main> fixEq twice not True
 
